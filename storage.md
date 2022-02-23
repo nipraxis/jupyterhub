@@ -39,7 +39,7 @@ gcloud compute instances create \
     $MACHINE \
     --image debian-10-buster-v20201014 \
     --image-project debian-cloud \
-    --machine-type=e2-small \
+    --machine-type=g1-small \
     --zone $ZONE
 
 gcloud compute instances describe $MACHINE
@@ -87,6 +87,7 @@ sudo chmod ${PERMISSIONS} $MNT_POINT
 
 ```
 # Make the expected disk structure
+# data and homes directory.
 HOME_PATH=spring-2022
 cd $MNT_POINT
 sudo mkdir data $HOME_PATH
