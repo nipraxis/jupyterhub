@@ -37,7 +37,7 @@ gcloud compute disks list
 MACHINE=test-machine
 gcloud compute instances create \
     $MACHINE \
-    --image debian-10-buster-v20201014 \
+    --image debian-10-buster-v20201112 \
     --image-project debian-cloud \
     --machine-type=g1-small \
     --zone $ZONE
