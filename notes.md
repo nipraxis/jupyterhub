@@ -66,7 +66,7 @@ gcloud compute addresses describe $IP_NAME --region $REGION
 ```
 
 Note the IP address from above in the `vars.sh` file and the `loadBalancerIP`
-field of `config.sh`.
+field of your `config.yaml` file - which might be `jh-secrets/config.yaml.<hub-name>`.
 
 Set up DNS to point to this IP.  Wait for it to propagate, at least to the
 console you are using, e.g.
@@ -76,6 +76,12 @@ nslookup uobhub.org
 ```
 
 Set the host name in your `config.yaml`.
+
+## Secret
+
+See your `config.yaml` file, maybe `jh-secrets/config.yaml.<hub-name>`.  If you
+are on helm chart < 1.0, you will need to generate a new `secretToken` with
+`openssl rand -hex 32`.
 
 ## Billing data
 
