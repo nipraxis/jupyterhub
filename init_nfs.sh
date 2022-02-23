@@ -17,11 +17,11 @@ kubectl create -f nfs-configs/nfs_service.yaml
 # Set up PV, PVC for home dirs and data directory.
 export NAMESPACE
 export NFS_PV_NAME="nfs"
-export NFS_DISK_PATH=$HOME_PATH
+export NFS_DISK_PATH="/$HOME_PATH"
 export NFS_ACCESS_MODE=ReadWriteMany
 envsubst < nfs-configs/nfs_pv_pvc_tpl.yaml | kubectl create -f -
 export NFS_PV_NAME="nfs-data"
-export NFS_DISK_PATH=$DATA_PATH
+export NFS_DISK_PATH="/$DATA_PATH"
 export NFS_ACCESS_MODE=ReadOnlyMany
 envsubst < nfs-configs/nfs_pv_pvc_tpl.yaml | kubectl create -f -
 

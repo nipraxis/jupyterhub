@@ -1,9 +1,10 @@
 # Source this file.
-CONFIG_YAML=jh-secrets/config.yaml.testing
-PROJECT_ID=uob-testing
-JHUB_CLUSTER=jhub-cluster-testing
-RELEASE=jhub-testing
-NAMESPACE=jhub-testing
+CONFIG_YAML=jh-secrets/config.yaml.nipraxis
+PROJECT_ID=nipraxis-jupyterhub
+JHUB_CLUSTER=jhub-cluster-nipraxis
+RELEASE=jhub-nipraxis
+NAMESPACE=jhub-nipraxis
+IP_NAME=nipraxis-ip
 # VM type for running the always-on part of the infrastructure.
 # May be able to get away with one machine.
 # https://gitter.im/jupyterhub/jupyterhub?at=5f86fb48a1c81d0a7ee084af
@@ -18,7 +19,7 @@ DEFAULT_DISK_TYPE=pd-ssd
 # If 0, all USER_* vars ignored below.
 USER_POOL=1
 # VM type for housing the users.
-USER_MACHINE=e2-highmem-2
+USER_MACHINE=e2-compute-2
 # VM disk size per node.
 USER_DISK_SIZE=30Gi
 # Minimum number of nodes in the user cluster.
@@ -34,15 +35,15 @@ USER_DISK_TYPE=pd-standard
 # datahub commit be8edd1 (2020-10-09) has 0.9.0-n335.hcc6c02d3
 JHUB_VERSION="0.10.0"
 # Region on which the cluster will run; see notes
-REGION=europe-west2
+REGION=us-west1
 # Zone within region; see notes
-ZONE=europe-west2-b
+ZONE=us-west1-b
 EMAIL=matthew.brett@gmail.com
 # Dataset to which billing information will be written
 # See the Google Cloud Billing Export pane for detail; enable daily cost
 # detail, and set up / name dataset there.
-RESOURCE_DATASET=uob_jupyterhub_billing
+RESOURCE_DATASET=nipraxis-hosting
 # Disk for data and homes
-CLUSTER_DISK=jhub-testing-home-data
-HOME_PATH=/2020-homes/
-DATA_PATH=/data/
+CLUSTER_DISK=jhub-nipraxis-home-data
+HOME_PATH=spring-2022-homes/
+DATA_PATH=data/

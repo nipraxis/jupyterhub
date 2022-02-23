@@ -20,7 +20,7 @@ gcloud config set project $PROJECT_ID
 ```
 # Create the disk
 # Size minimum is 10GB
-SIZE=64GB
+SIZE=32GB
 STORAGE_TYPE="pd-ssd"
 gcloud compute disks create \
     --size=$SIZE \
@@ -37,9 +37,9 @@ gcloud compute disks list
 MACHINE=test-machine
 gcloud compute instances create \
     $MACHINE \
-    --image debian-10-buster-v20200910 \
+    --image debian-10-buster-v20201014 \
     --image-project debian-cloud \
-    --machine-type=g1-small \
+    --machine-type=e2-small \
     --zone $ZONE
 
 gcloud compute instances describe $MACHINE
@@ -56,17 +56,18 @@ Now follow instructions at <https://cloud.google.com/compute/docs/disks/add-pers
 
 ```
 # SSH into instance
-gcloud beta compute ssh --zone $ZONE $MACHINE --project $PROJECT_ID
+gcloud compute ssh --zone $ZONE $MACHINE --project $PROJECT_ID
 ```
 
 ```
-# Then
+# Then look for the disk that is not the system disk here.
+# It will not be mounted yet.
 sudo lsblk  # Check disk device id
 ```
 
 ```
 # Set device ID, mount point, permissions
-DEVICE=sdb
+DEVICE=sdb  # From lsblk above.
 MNT_POINT=/mnt/disks/data
 PERMISSIONS="a+r"
 ```
@@ -86,12 +87,21 @@ sudo chmod ${PERMISSIONS} $MNT_POINT
 
 ```
 # Make the expected disk structure
+HOME_PATH=spring-2022
 cd $MNT_POINT
-sudo mkdir data 2020-homes
-sudo chmod a+rw 2020-homes
+sudo mkdir data $HOME_PATH
+sudo chmod a+rw $HOME_PATH
 ```
 
 Teardown instance:
+
+First
+
+```
+exit  # From ssh login
+```
+
+Then
 
 ```
 gcloud compute instances delete $MACHINE

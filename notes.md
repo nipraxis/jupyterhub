@@ -42,6 +42,7 @@ maybe followed by:
 
 ```
 . vars.sh
+gcloud config set project $PROJECT_ID  # or whatever
 CLUSTER=${JHUB_CLUSTER}  # or whatever
 gcloud container clusters get-credentials $CLUSTER --zone $ZONE
 ```
@@ -59,8 +60,9 @@ requests from the proxy.  I made a static IP address, following [this
 tutorial](https://cloud.google.com/kubernetes-engine/docs/tutorials/configuring-domain-name-static-ip):
 
 ```
-gcloud compute addresses create uobhub-ip --region europe-west2
-gcloud compute addresses describe uobhub-ip --region europe-west2
+IP_NAME=my-hub-ip  # Label for reserved ip
+gcloud compute addresses create $IP_NAME --region $REGION
+gcloud compute addresses describe $IP_NAME --region $REGION
 ```
 
 Note the IP address from above in the `vars.sh` file and the `loadBalancerIP`
