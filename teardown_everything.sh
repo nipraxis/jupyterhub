@@ -10,13 +10,8 @@ read -n1 -r -p "Press y to continue, any other key to cancel." key
 echo
 
 if [ "$key" = 'y' ]; then
-    echo "Deleting $JHUB_CLUSTER"
-    helm delete $RELEASE
-
-    kubectl delete namespace $NAMESPACE
-
+    ./teardown_jhub.sh
     ./teardown_gcloud_now.sh
-
     # Check teardown
     ./show_gcloud.sh
 else
