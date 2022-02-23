@@ -5,4 +5,4 @@ metadata:
 provisioner: kubernetes.io/gce-pd
 parameters:
   type: pd-ssd
-  zones: europe-west2-b
+  zones: us-west1-b

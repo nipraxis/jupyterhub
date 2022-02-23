@@ -163,8 +163,9 @@ and <https://github.com/berkeley-dsep-infra/datahub/issues/596>.
 I used a new project.  You'll need an IP and domain name for cluster, as above,
 and maybe authentication, see below.
 
-* Edit `vars.sh` to record IP, Google project name and other edits to taste.
-* Edit `config.yaml` to record domain name etc.
+* Edit `vars.sh` to give hub name
+* Edit `hubs/vars.sh.<hub-name>` to record IP, Google project name and other edits to taste.
+* Edit `jh-secrets/config.yaml.<hub-name>` to record domain name etc.
 * Run:
 
 ```
