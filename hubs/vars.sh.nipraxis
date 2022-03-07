@@ -5,4 +5,3 @@ JHUB_CLUSTER=jhub-cluster
 RELEASE=jhub
 NAMESPACE=jhub
 CLUSTER_DISK=jhub-nipraxis-home-data
-IP_NAME=nipraxis-ip

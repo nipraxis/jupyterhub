@@ -29,6 +29,16 @@ Regions contain *zones*.  See the
 [docs](https://cloud.google.com/sdk/gcloud/reference/container/clusters/create)
 I've specified zone b --- see the `vars.sh` file.
 
+## Set default region and zone
+
+```
+REGION=us-west1
+ZONE=us-west1-b
+gcloud compute project-info add-metadata \
+    --metadata google-compute-default-region=$REGION,google-compute-default-zone=$ZONE
+gcloud init
+```
+
 ## Authenticate
 
 Otherwise you'll get `The connection to the server localhost:8080 was refused`

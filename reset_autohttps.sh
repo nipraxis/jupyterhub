@@ -9,4 +9,5 @@
 # kubectl get secrets
 # kubectl delete secret $(kubectl get secrets -o custom-columns=SECRET:metadata.name | grep "proxy-.*-tls-acme")
 # kubectl get secrets
-kubectl delete pods $(kubectl get pods -o custom-columns=POD:metadata.name | grep autohttps-)
+https_pod=$(kubectl --namespace=$NAMESPACE get pods -o custom-columns=POD:metadata.name | grep autohttps-)
+kubectl delete pods $https_pod

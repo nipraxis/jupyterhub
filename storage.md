@@ -88,7 +88,7 @@ sudo chmod ${PERMISSIONS} $MNT_POINT
 ```
 # Make the expected disk structure
 # data and homes directory.
-HOME_PATH=spring-2022
+HOME_PATH=spring-2022-homes
 cd $MNT_POINT
 sudo mkdir data $HOME_PATH
 sudo chmod a+rw $HOME_PATH
@@ -106,6 +106,12 @@ Then
 
 ```
 gcloud compute instances delete $MACHINE
+```
+
+You might want to check:
+
+```
+gcloud compute disks list
 ```
 
 ## Resize disk
