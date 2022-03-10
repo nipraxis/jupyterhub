@@ -6,8 +6,81 @@ These are somewhat finessed versions of the commands in:
 
 <https://zero-to-jupyterhub.readthedocs.io/en/latest/>
 
-In particular, they follow the instructions for Google Cloud Engine, starting
-with the [basic GCE / Kubernetes
+In summary, the scripts here are slightly modified versions of the commands
+there, wrapped into scripts, and configured by environment variables sourced
+from a `vars.sh` file, and various sub-files.
+
+As usual, the setup of the JupyterHub Helm chart is via a `config.yaml` file,
+pointed to via the `vars.sh` environment variables.
+
+In what follows, GCE stands for Google Compute Engine.
+
+## Using the scripts, starting from scratch
+
+These are instructions assuming you have read the rest of this document,
+explaining how the scripts work.
+
+* Create a new GCE *project* to house the cluster and other resources.  The
+  default one I used here is the project `nipraxis-jupyterhub`.
+* Use GCE to reserve an IP for your cluster to host at; see the "Static IP"
+  section below.
+* Configure your DNS to point some domain to the IP above, using an "A" record.
+
+You will then want to
+* Edit `vars.sh` to give hub name
+* Edit `hubs/vars.sh.<hub-name>` to record IP, Google project name and other
+  edits to taste.
+* Edit `jh-secrets/config.yaml.<hub-name>` to record domain name etc.
+* Run the "Start and configure" steps below.
+
+My `config.yaml.cleaned` and `vars.sh` are for a fairly low-spec, but scalable
+cluster.
+
+## Start and configure
+
+```
+# Initialize cluster
+source init_gcloud.sh
+```
+
+```
+# Initialize Helm
+source setup_helm.sh
+```
+
+```
+# Initialize NFS
+source init_nfs.sh
+```
+
+```
+# Configure cluster by applying Helm chart
+source configure_jhub.sh
+```
+
+Test https.   You might need to:
+
+```
+# Check the HTTPS logs
+./log_autohttps.sh
+```
+
+Then you might want to:
+
+```
+# Reset https on cluster
+source reset_autohttps.sh
+```
+
+See the message from `reset_autohttps.sh` for suggestions, if HTTPS isn't
+working.
+
+## In more detail
+
+### First - GCE setup
+
+Here are the instructions for Google Cloud Engine, starting with the [basic GCE
+/ Kubernetes
 setup](https://zero-to-jupyterhub.readthedocs.io/en/latest/google/step-zero-gcp.html).
 
 I believe I cannot create a housing organization, because I am not a G-Suite or
@@ -30,7 +103,7 @@ Regions contain *zones*.  See the
 [docs](https://cloud.google.com/sdk/gcloud/reference/container/clusters/create)
 I've specified zone `b` --- see the `vars.sh` file.
 
-## Set default region and zone
+### Set default region and zone
 
 ```
 REGION=us-west1
@@ -40,7 +113,7 @@ gcloud compute project-info add-metadata \
 gcloud init
 ```
 
-## Authenticate
+### Authenticate
 
 Otherwise you'll get `The connection to the server localhost:8080 was refused`
 for various commands.
@@ -60,11 +133,11 @@ gcloud container clusters get-credentials $CLUSTER --zone $ZONE
 
 <https://stackoverflow.com/a/57592322/1939576>
 
-## Documentation links
+### Documentation links
 
 * <https://kubernetes.io/docs/reference/kubectl/cheatsheet>
 
-## Static IP addresses
+### Static IP addresses
 
 I believe the standard JupyterHub / Kubernetes setup uses a Service to route
 requests from the proxy.  I made a static IP address, following [this
@@ -88,7 +161,7 @@ nslookup hub.nipraxis.org
 
 Set the host name in your `config.yaml`.
 
-## Billing data
+### Billing data
 
 You'll need this!  Honestly.  The money runs out quickly if you're not keeping
 track of where it's going.
@@ -96,7 +169,7 @@ track of where it's going.
 I set up a billing table to export to, via the Google Billing Export panel,
 called `uob_jupyterhub_billing`.
 
-## Scaling
+### Scaling
 
 Be careful when scaling.  I had a demo crash catastrophically when more than
 32 or so people tried to log in - see [this discourse thread for some
@@ -142,7 +215,7 @@ See the [Berkeley GKE
 summary](https://docs.datahub.berkeley.edu/en/latest/admins/cluster-config.html)
 for a little more detail.
 
-## Storage
+### Storage
 
 Follow steps in `./storage.md` to create home directories / data disk, served
 by NFS.
@@ -156,263 +229,18 @@ Install Helm v2 in `$HOME/usr/local/bin` filesystem:
 source ~/.bashrc
 ```
 
-## Examples
+### Examples
 
 There are various examples of configuration in
 <https://github.com/berkeley-dsep-infra/datahub/tree/staging/deployments>,
 with some overview in the [datahub
 docs](https://docs.datahub.berkeley.edu/en/latest/users/hubs.html).
 
-## Keeping secrets
+### Keeping secrets
 
 See
 <https://discourse.jupyter.org/t/best-practices-for-secrets-in-z2jh-deployments/1292>
 and <https://github.com/berkeley-dsep-infra/datahub/issues/596>.
-
-## The whole thing
-
-I used a new project.  You'll need an IP and domain name for cluster, as above,
-and maybe authentication, see below.
-
-* Edit `vars.sh` to give hub name
-* Edit `hubs/vars.sh.<hub-name>` to record IP, Google project name and other edits to taste.
-* Edit `jh-secrets/config.yaml.<hub-name>` to record domain name etc.
-* Run:
-
-```
-# Initialize cluster
-source init_gcloud.sh
-```
-
-```
-# Initialize Helm
-source setup_helm.sh
-```
-
-```
-# Initialize NFS
-source init_nfs.sh
-```
-
-```
-# Configure cluster by applying Helm chart
-source configure_jhub.sh
-```
-
-Test https.   You might need to:
-
-```
-# Reset https on cluster
-source reset_autohttps.sh
-```
-
-My `config.yaml.cleaned` and `vars.sh` are for a fairly low-spec, but scalable
-cluster.
-
-## Procedure in steps
-
-### Each time you restart the cloud console
-
-Source the `vars.sh` file:
-
-```
-source vars.sh
-```
-
-### Kubernetes
-
-Create the main cluster.
-
-```
-gcloud container clusters create \
-  --machine-type n1-standard-2 \
-  --num-nodes 2 \
-  --cluster-version latest \
-  --node-locations $ZONE \
-  --region $REGION \
-  $JHUB_CLUSTER
-```
-
-> Give your account permissions to perform all administrative actions needed.
-
-```
-kubectl create clusterrolebinding cluster-admin-binding \
-  --clusterrole=cluster-admin \
-  --user=$EMAIL
-```
-
-Optional - create a special user cluster.
-
-```
-gcloud beta container node-pools create user-pool \
-  --machine-type n1-standard-2 \
-  --num-nodes 0 \
-  --enable-autoscaling \
-  --min-nodes 0 \
-  --max-nodes 3 \
-  --node-labels hub.jupyter.org/node-purpose=user \
-  --node-taints hub.jupyter.org_dedicated=user:NoSchedule \
-  --node-locations $ZONE \
-  --region $REGION \
-  --cluster $JHUB_CLUSTER
-```
-
-### Helm
-
-Now:
-<https://zero-to-jupyterhub.readthedocs.io/en/latest/setup-jupyterhub/setup-helm.html>.
-
-All commands in web console:
-
-> Set up a ServiceAccount for use by tiller.
-
-```
-kubectl --namespace kube-system create serviceaccount tiller
-```
-
-> Give the ServiceAccount full permissions to manage the cluster.
-
-See caveat in docs about RBAC.  The Google Kubernetes setup does use RBAC, so
-the caveat did not apply to me.
-
-```
-kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
-```
-
-> Initialize helm and tiller.
-
-```
-helm init --service-account tiller --history-max 100 --wait
-```
-
-Note message
-
-```
-Please note: by default, Tiller is deployed with an insecure 'allow unauthenticated users' policy.
-To prevent this, run `helm init` with the --tiller-tls-verify flag.
-For more information on securing your installation see: https://v2.helm.sh/docs/securing_installation/
-```
-
-> Ensure that tiller is [secure from access inside the cluster](https://engineering.bitnami.com/articles/helm-security.html):
-
-```
-kubectl patch deployment tiller-deploy --namespace=kube-system --type=json --patch='[{"op": "add", "path": "/spec/template/spec/containers/0/command", "value": ["/tiller", "--listen=localhost:44134"]}]'
-```
-
-### JupyterHub
-
-<https://zero-to-jupyterhub.readthedocs.io/en/latest/setup-jupyterhub/setup-jupyterhub.html>
-
-Make `config.yaml` as in the instructions.  See `config.yaml.cleaned` for a
-sanitized version.
-
-Add JupyterHub Helm chart repository:
-
-```
-helm repo add jupyterhub https://jupyterhub.github.io/helm-chart/
-helm repo update
-```
-
-Apply Helm chart.
-
-```
-helm upgrade --install $RELEASE jupyterhub/jupyterhub \
-  --namespace $NAMESPACE  \
-  --version=$JHUB_VERSION \
-  --values config.yaml
-```
-
-Optional, autocompletion:
-
-```
-kubectl config set-context $(kubectl config current-context) --namespace ${NAMESPACE:-jhub}
-```
-
-To check what is running, after starting help upgrade above:
-
-```
-kubectl get pod --namespace $NAMESPACE
-```
-
-Once `hub` and `proxy` are running:
-
-```
-kubectl get service --namespace $NAMESPACE
-```
-
-to show the external IP address.
-
-## Set up HTTPS
-
-<https://zero-to-jupyterhub.readthedocs.io/en/latest/administrator/security.html#https>
-
-Don't forget to reserve the IP (see above).
-
-```
-proxy:
-  https:
-    hosts:
-      - uobhub.org
-    letsencrypt:
-      contactEmail: matthew.brett@gmail.com
-  service:
-    loadBalancerIP: 35.189.82.198
-```
-
-This proved tricky.  See [this
-post](https://discourse.jupyter.org/t/trouble-getting-https-letsencrypt-working-with-0-9-0-beta-4/3583/5?u=matthew.brett)
-for details, following the [kind suggestions by Erik
-Sundell](https://discourse.jupyter.org/t/trouble-getting-https-letsencrypt-working-with-0-9-0-beta-4/3583/4?u=matthew.brett).
-
-I found and deleted the secret:
-
-```
-kubectl get secrets
-kubectl delete secret proxy-public-tls-acme
-kubectl get secrets
-```
-
-I found the latest chart from <https://jupyterhub.github.io/helm-chart/#development-releases-jupyterhub>, which was `0.9.0-n116.h1c766a1`.
-
-I then purged and restarted using this chart:
-
-```
-$ helm delete $RELEASE --purge
-$ helm upgrade --install $RELEASE jupyterhub/jupyterhub --namespace $NAMESPACE --version=$JHUB_VERSION --values config.yaml
-```
-
-Then I checked the logs, but got the same error:
-
-```
-$ kubectl logs pod/$(kubectl get pods -o custom-columns=POD:metadata.name | grep autohttps-) traefik -f
-```
-
-giving:
-
-```
-time="2020-07-03T17:46:42Z" level=error msg="Unable to obtain ACME certificate for domains \"testing.uobhub.org\" : unable to generate a certificate for th
-e domains [testing.uobhub.org]: error: one or more domains had a problem:\n[testing.uobhub.org] acme: error: 400 :: urn:ietf:params:acme:error:connection :
-: Fetching http://testing.uobhub.org/.well-known/acme-challenge/QfUNDgaKU_3dw_WvkDiPaAADbFAOciVMXCMG99nZCiI: Timeout during connect (likely firewall proble
-m), url: \n" providerName=default.acme
-```
-
-Finally, I tried deleting the `autohttps` pod:
-
-```
-$ kubectl delete pods $(kubectl get pods -o custom-columns=POD:metadata.name | grep autohttps-)
-```
-
-And - hey presto - it worked!
-
-Check https access with a [Qualsys SSL labs URL in your
-browser](https://zero-to-jupyterhub.readthedocs.io/en/latest/administrator/security.html#confirm-that-your-domain-is-running-https).
-
-## Upgrade to new helm chart
-
-```
-. vars.sh
-helm upgrade $RELEASE jupyterhub/jupyterhub  --version=$JHUB_VERSION --values config.yaml
-```
 
 ## Securing
 
@@ -489,23 +317,6 @@ Don't forget the tag!
 **Make sure that the JupyterHub version installed on the Docker image is the
 same as the JupyterHub version in the current Helm chart**.  Otherwise stuff
 will go wrong.
-
-I am now using custom images, based on the Dockerfile at
-<https://github.com/berkeley-dsep-infra/datahub/tree/staging/deployments/datahub/images/default>.
-See <https://github.com/matthew-brett/uob-docker> for Dockerfiles etc. I upload
-to the Google Container Registry, in the EU, on the perhaps mistaken belief
-that ingress costs and image pull time will be less for my UK zone cluster.
-
-```
-    name: eu.gcr.io/uob-jupyterhub/r-minimal-python
-    tag: e81a589
-```
-
-My docker files are relatively small, at uncompressed (compressed) size of
-3.5GB (1.1GB), compared to, for example, the current Berkeley Datahub image,
-which is 9.1GB (3.2 GB).  My images have the same RStudio install as the
-Berkeley images, but a much more minimal Python install.  Compressed sizes are
-from e.g <https://console.cloud.google.com/gcr/images/ucb-datahub-2018>.
 
 ## Logging, login
 
