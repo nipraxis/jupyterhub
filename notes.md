@@ -1,18 +1,20 @@
-# Setting up the UoB JupyterHub
+# Setting up the Nipraxis JupyterHub
+
+## Introduction
+
+These are somewhat finessed versions of the commands in:
 
 <https://zero-to-jupyterhub.readthedocs.io/en/latest/>
 
-Then:
-
-<https://zero-to-jupyterhub.readthedocs.io/en/latest/google/step-zero-gcp.html>
-
-I added a budget to cap at the \$500 dollar limit, with default warnings.
+In particular, they follow the instructions for Google Cloud Engine, starting
+with the [basic GCE / Kubernetes
+setup](https://zero-to-jupyterhub.readthedocs.io/en/latest/google/step-zero-gcp.html).
 
 I believe I cannot create a housing organization, because I am not a G-Suite or
 Cloud Identity customer - see [this
 page](https://cloud.google.com/resource-manager/docs/creating-managing-organization).
 
-I created a project `uob-jupyterhub`.
+I created a project `nipraxis-jupyterhub`.
 
 I enabled the Kubernetes API via
 <https://console.cloud.google.com/apis/library/container.googleapis.com>.
@@ -22,12 +24,11 @@ console](https://console.cloud.google.com).  The web shell wouldn't start on
 Firefox, so I went to Chrome.  Later I installed the [Google Cloud
 SDK](https://cloud.google.com/sdk) locally, as I got bored of being automatically disconnected from the web shell.
 
-`europe-west2` appears to be the right *region* for the UK:
-<https://cloud.google.com/compute/docs/regions-zones/#available>.
+`europe-west2` appears to be the right *region* for the UK.  `us-west1` is OK for the US.  See [GCE regions](https://cloud.google.com/compute/docs/regions-zones/#available).
 
 Regions contain *zones*.  See the
 [docs](https://cloud.google.com/sdk/gcloud/reference/container/clusters/create)
-I've specified zone b --- see the `vars.sh` file.
+I've specified zone `b` --- see the `vars.sh` file.
 
 ## Set default region and zone
 
@@ -82,16 +83,10 @@ Set up DNS to point to this IP.  Wait for it to propagate, at least to the
 console you are using, e.g.
 
 ```
-nslookup uobhub.org
+nslookup hub.nipraxis.org
 ```
 
 Set the host name in your `config.yaml`.
-
-## Secret
-
-See your `config.yaml` file, maybe `jh-secrets/config.yaml.<hub-name>`.  If you
-are on helm chart < 1.0, you will need to generate a new `secretToken` with
-`openssl rand -hex 32`.
 
 ## Billing data
 
@@ -187,11 +182,6 @@ and maybe authentication, see below.
 ```
 # Initialize cluster
 source init_gcloud.sh
-```
-
-```
-# Initialize Kubernetes
-source init_kubernetes.sh
 ```
 
 ```
