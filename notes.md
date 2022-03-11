@@ -15,7 +15,7 @@ pointed to via the `vars.sh` environment variables.
 
 In what follows, GCE stands for Google Compute Engine.
 
-## Using the scripts, starting from scratch
+## Scripts, starting from scratch
 
 If you've already done the configuration here, go to "Start and configure".
 
@@ -90,7 +90,30 @@ To apply a configuration change in the relevant `config.yaml.*` file on a runnin
 source configure_jhub.sh
 ```
 
-See the `teardown_everything.sh` script for tearing stuff down.“:
+See the `teardown_everything.sh` script for tearing stuff down.
+
+## Testing the cluster
+
+To test the cluster, try a big scale-up.  See the next section "Before a live
+session in a course".  Try scaling up to a large number.  Review any scaling
+messages in the Google Cloud Console.  In particular, you will likely want to
+ask for increases in some quotas.
+
+## Before a live session in a course
+
+Once your cluster is running, you might consider a preventive scale-up, maybe something like this:
+
+```bash
+# Anticipating 25 students or so.
+# Add an extra 10 placeholders on top to make lots of scaling happen.
+./tools/scale_placeholder.sh 10
+```
+
+Don't forget to scale down again after the end of the course, e.g.:
+
+```bash
+./tools/scale_placeholder.sh 0
+```
 
 ## In more detail
 
@@ -544,6 +567,19 @@ jupyterhub:
     hub_activity_interval: 600  # Default 300
     last_activity_interval: 300  # Default 300
     init_spawners_timeout: 1  # Default 10
+```
+
+The script `./tools/scale_placeholder.sh` will add placeholders without you
+having to modify the config file.  Run as:
+
+```bash
+./tools/scale_placeholder.sh 50
+```
+
+to add 50 placeholders.   This is a useful way to check how scaling is going to work.  Check quotas and other errors after scaling.  Then drop back to fewer placeholders with e.g.
+
+```bash
+./tools/scale_placeholder.sh 0
 ```
 
 At time of writing, I also used a devel release of the JupyterHub Helm chart,
