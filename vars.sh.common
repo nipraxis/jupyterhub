@@ -42,7 +42,7 @@ ZONE=us-west1-b
 CLUSTER_SPEC="--region ${REGION}"
 # CLUSTER_SPEC="--zone ${ZONE}"
 # Admin email.
-EMAIL=matthew.brett@gmail.com
+EMAIL="${GCE_EMAIL:-matthew.brett@gmail.com}"
 # Dataset to which billing information will be written
 # See the Google Cloud Billing Export pane for detail; enable daily cost
 # detail, and set up / name dataset there.

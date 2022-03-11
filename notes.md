@@ -17,8 +17,10 @@ In what follows, GCE stands for Google Compute Engine.
 
 ## Using the scripts, starting from scratch
 
-These are instructions assuming you have read the rest of this document,
-explaining how the scripts work.
+If you've already done the configuration here, go to "Start and configure".
+
+These are instructions on getting started, assuming you have read the rest of
+this document, explaining how the scripts work.
 
 * Create a new GCE *project* to house the cluster and other resources.  The
   default one I used here is the project `nipraxis-jupyterhub`.
@@ -38,6 +40,12 @@ cluster.
 
 ## Start and configure
 
+Consider setting your email, if you are a GCE administrator for the relevant project:
+
+```
+GCE_EMAIL=matthew.brett@gmail.com
+```
+
 ```
 # Initialize cluster
 source init_gcloud.sh
@@ -54,7 +62,7 @@ source init_nfs.sh
 ```
 
 ```
-# Configure cluster by applying Helm chart
+# (Re-) Configure cluster by applying Helm chart
 source configure_jhub.sh
 ```
 
@@ -74,6 +82,15 @@ source reset_autohttps.sh
 
 See the message from `reset_autohttps.sh` for suggestions, if HTTPS isn't
 working.
+
+To apply a configuration change in the relevant `config.yaml.*` file on a running cluster:
+
+```
+# (Re-) Configure cluster by applying Helm chart
+source configure_jhub.sh
+```
+
+See the `teardown_everything.sh` script for tearing stuff down.“:
 
 ## In more detail
 
@@ -217,12 +234,12 @@ for a little more detail.
 
 ### Storage
 
-Follow steps in `./storage.md` to create home directories / data disk, served
-by NFS.
+Follow steps in `./storage.md` to create home directories / data
+disk, served by NFS.
 
 ## Local Helm
 
-Install Helm v2 in `$HOME/usr/local/bin` filesystem:
+Install Helm in `$HOME/usr/local/bin` filesystem:
 
 ```
 . install_helm.sh
