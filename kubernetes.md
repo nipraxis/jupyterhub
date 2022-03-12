@@ -7,11 +7,13 @@ according to these recipes.
 
 Clusters contain virtual machines, called *nodes*.
 
-The cluster has a defined set of managing processes, collectively known as the *control plane*.
+The cluster has a defined set of managing processes, collectively known as the
+*control plane*.
 
 A *node* contains *pods*.  In standard use, a *pod* is a wrapper around
-a single container, such as a Docker container.  Pods in the same node can
-talk to each other.
+a single container, such as a Docker container, but more advanced use places
+more than one container in a pod.  Pods in the same node can talk to each
+other.
 
 ## More detail overview
 
