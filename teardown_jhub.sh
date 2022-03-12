@@ -2,7 +2,7 @@
 . set_config.sh
 echo "Deleting JHub $RELEASE"
 helm delete $RELEASE
-sleep 10
+sleep 20
 ./teardown_nfs.sh
-sleep 10
+sleep 20
 kubectl delete namespace $NAMESPACE
