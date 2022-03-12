@@ -5,6 +5,7 @@
 
 echo "Please see https://github.com/jupyterhub/zero-to-jupyterhub-k8s/issues/2601#issuecomment-1050406952"
 echo "You might want to first run the 'kubectl edit deploy autohttps' suggested there"
+echo 'And add the line '\''command: ["sh", "-c", "sleep 10 && /entrypoint.sh traefik"]'\'''
 
 read -n1 -r -p "Press y to continue, any other key to cancel." key
 echo
