@@ -1,14 +1,27 @@
 # Setup for Nipraxis JupyterHub
 
-* Open [Google Cloud web console](https://console.cloud.google.com), and start
-  the web shell, or install the [Google Cloud
+## Setting up the repository
+
+There should be a pre-commit hook to prevent committing not-encrypted
+files with `secret` in their path see [sops pre-commit
+hook](https://github.com/yuvipanda/pre-commit-hook-ensure-sops).
+
+```
+pip install pre-commit
+pre-commit install
+```
+
+## Setting up the JupyterHub
+
+* Open [Google Cloud web console](https://console.cloud.google.com), and
+  start the web shell, or install the [Google Cloud
   SDK](https://cloud.google.com/sdk) locally.
 * If not done already: `git clone nipraxis/jupyterhub nipraxis-jupyterhub`
 * `cd nipraxis-jupyterhub`
 * If setting up configuration from scratch see: "Scripts, starting from
   scratch" section in `./notes.md`.
-* If running or reconfiguring a configured cluster, see: "Start and configure"
-  section in `./notes.md`.
+* If running or reconfiguring a configured cluster, see: "Start and
+  configure" section in `./notes.md`.
 
 * If resuming: `source setup_helm.sh`
 * To apply changes in `config.yaml` to running instance: `./rehelm.sh`.
