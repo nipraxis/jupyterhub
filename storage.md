@@ -136,8 +136,8 @@ gcloud compute snapshots list
 ```
 
 ```
-DISK_NAME=${CLUSTER_DISK}
 . vars.sh
+DISK_NAME=${CLUSTER_DISK}
 gcloud compute disks snapshot $DISK_NAME --zone $ZONE
 ```
 
@@ -163,6 +163,13 @@ gcloud compute disks add-resource-policies ${DISK_NAME} \
     --resource-policies ${SCHEDULE_NAME} \
     --zone $ZONE
 ```
+
+Example of deleting multiple snapshots:
+
+```
+gcloud compute snapshots list --filter="name~'nipraxis-hub-us.*'" --uri | xargs gcloud compute snapshots delete --quiet
+```
+
 
 ## Use pre-existing volumes
 
