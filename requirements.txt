@@ -1,0 +1,2 @@
+# Requirements for JupyterHub config repo
+pre-commit
