@@ -28,3 +28,5 @@ pre-commit install
 * See other scripts in repo directory for setup / teardown utilities.
 
 See `./notes.md` for description and other procedure.
+
+In the future, consider [hubploy](https://github.com/yuvipanda/hubploy) for managing the cluster.
