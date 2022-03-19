@@ -7,5 +7,11 @@ NAMESPACE=jhub-testing
 CLUSTER_DISK=jhub-testing-home-data
 # Allow default pool to further autoscale, if necessary.
 MAX_DEFAULT_NODES=2
+# VM type for housing the users.
+USER_MACHINE=e2-standard-2
+# Cluster specification.  Can be regional or zonal.  Regional about $70 pcm
+# more expensive, less likely to fall over.
+# CLUSTER_SPEC="--region ${REGION}"
+CLUSTER_SPEC="--zone ${ZONE}"
 # Config; this one will often have secrets.
 CONFIG_YAML=jh-secrets/config.yaml.${HUB_NAME}
