@@ -1,5 +1,6 @@
 #!/bin/sh
 # Show gcloud resources
+. set_config.sh
 echo "Clusters:"
 gcloud container clusters list
 echo "Instances:"
