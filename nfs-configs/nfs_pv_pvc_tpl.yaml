@@ -12,8 +12,8 @@ spec:
     - noatime
     - vers=4.2
   nfs:
-    # Use internal DNS name
-    server: nfs-server.${NAMESPACE}.svc.cluster.local
+    # Use IP to avoid large number of DNS queries
+    server: "${NFS_IP}"
     path: "${NFS_DISK_PATH}"
 
 ---
