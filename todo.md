@@ -12,7 +12,7 @@ I think this involves:
 * Creating a subnet.
 * Starting the cluster within that subnet.
 * Reserving the IP address.
-* Putting the IP address into `spec` for the deployment.  Maybe:
+* Putting the IP address into the `spec` for the deployment.  Maybe:
 
 ```yaml
 # https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
