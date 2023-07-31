@@ -30,3 +30,12 @@ pre-commit install
 See `./notes.md` for description and other procedure.
 
 In the future, consider [hubploy](https://github.com/yuvipanda/hubploy) for managing the cluster.
+
+## Scaling
+
+Before the class:
+
+```bash
+# Scale up to 50 placeholders for 25 minutes, then scale back to 0.
+./tools/scale_placeholder.sh 50 25 0
+```

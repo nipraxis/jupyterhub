@@ -1,5 +1,7 @@
 # Specific setup for Nipraxis
 
+## Uploading to NFS
+
 Log into NFS pod:
 
 ```
